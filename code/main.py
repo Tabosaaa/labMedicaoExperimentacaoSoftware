@@ -11,7 +11,7 @@ token = os.getenv("TOKEN")
 if not token:
     raise Exception("Você precisa configurar a variável \"TOKEN\" no arquivo .env") 
 
-number_of_repositories = 100
+number_of_repositories = 1000
 
 data = get_all_repositories(number_of_repositories, token=token)
 

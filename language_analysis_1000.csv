@@ -1,0 +1,11 @@
+index,total_repositories_analyzed,distribution_of_popular_languages,count_of_other_languages
+Python,1000,163,294
+JavaScript,1000,156,294
+TypeScript,1000,132,294
+Go,1000,75,294
+Java,1000,59,294
+C++,1000,51,294
+C,1000,24,294
+Shell,1000,23,294
+C#,1000,14,294
+PHP,1000,9,294
