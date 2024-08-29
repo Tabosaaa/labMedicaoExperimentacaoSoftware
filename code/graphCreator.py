@@ -3,9 +3,9 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 # Carregando os arquivos CSV
-df1 = pd.read_csv('general_analysis_1000.csv')
-df2 = pd.read_csv('language_analysis_1000.csv')
-df3 = pd.read_csv('repositories_data_1000.csv')
+df1 = pd.read_csv('csv/general_analysis_1000.csv')
+df2 = pd.read_csv('csv/language_analysis_1000.csv')
+df3 = pd.read_csv('csv/repositories_data_1000.csv')
 
 # RQ 01: Histograma da Idade dos Repositórios
 plt.figure(figsize=(10, 6))
