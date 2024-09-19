@@ -1,19 +1,18 @@
 import os
 from dotenv import load_dotenv
-from execSearch import get_all_repositories
-from repositorysCode import clone_repositories,run_ck_on_repositories
+from RepositoryClass.repositoryProcessor import RepositoryProcessor
 
 load_dotenv()
 
 token = os.getenv("TOKEN")
 
-if not token:
-    raise Exception("Você precisa configurar a variável \"TOKEN\" no arquivo .env") 
+if __name__ == "__main__":
+    token = os.getenv("TOKEN")
+    if not token:
+        raise Exception("Você precisa configurar a variável \"TOKEN\" no arquivo .env")
 
-number_of_repositories = 5
+    number_of_repositories = 1000
+    jar_path = "/Users/tabosa/ck/target/ck-0.7.1-SNAPSHOT-jar-with-dependencies.jar"
 
-data = get_all_repositories(number_of_repositories, token=token)
-
-clone_repositories(data)
-run_ck_on_repositories(base_dir="codes/lab02/repositories")
-
+    processor = RepositoryProcessor(token, number_of_repositories, jar_path)
+    processor.process_all()
