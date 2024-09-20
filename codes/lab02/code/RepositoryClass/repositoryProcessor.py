@@ -13,18 +13,19 @@ class RepositoryProcessor:
         self.number_of_repositories = number_of_repositories
         self.jar_path = jar_path
         self.repositories_data = get_all_repositories(self.number_of_repositories, token=self.token)
-        self.ck_runner = CKRunner(jar_path=self.jar_path)
+        self.ck_runner = CKRunner(jar_path=self.jar_path,)
         self.repos_metrics = []  # Lista para armazenar as métricas de cada repositório
 
     def process_all(self):
         """Processa todos os repositórios obtidos."""
+        aux = 1
         for repo_data in self.repositories_data:
             owner = repo_data['owner']['login']
             name = repo_data['name']
             repository = Repository(owner=owner, name=name)
             repository.clone()
 
-            # Executa o CK e obtém LOC e linhas de comentários
+            # Executa o CK no repositório
             self.ck_runner.run(repository)
 
             # Exclui o repositório clonado
@@ -46,10 +47,13 @@ class RepositoryProcessor:
                 'owner': owner,
                 'stars': stars,
                 'releases': releases,
-                'maturity_years': round(maturity_years, 2),
+                'maturity_years': round(maturity_years, 2)
             }
 
             self.repos_metrics.append(repo_metrics)
+
+            print(f"Repositório número {aux}")
+            aux += 1
 
         # Após processar todos os repositórios, salva as métricas em um CSV
         self.save_repos_metrics()

@@ -14,9 +14,7 @@ class CKRunner:
         self.var_field_metrics = var_field_metrics
 
     def run(self, repository):
-        """Executa o CK no repositório fornecido e retorna loc e linhas de comentários."""
-        temp_output_dir = os.path.join(self.output_base_dir, "temp")
-        os.makedirs(temp_output_dir, exist_ok=True)
+        repo_output_dir = os.path.join(self.output_base_dir, repository.name)
 
         print(f"Executando CK no repositório em {repository.local_path}")
         subprocess.run([
@@ -25,10 +23,8 @@ class CKRunner:
             self.use_jars,
             str(self.max_files_partition),
             self.var_field_metrics,
-            temp_output_dir
+            repo_output_dir
         ], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 
-        # Remove o diretório temporário
-        shutil.rmtree(temp_output_dir)
         print(f"Dados do CK processados para {repository.name}.")
