@@ -11,7 +11,7 @@ if __name__ == "__main__":
     if not token:
         raise Exception("Você precisa configurar a variável \"TOKEN\" no arquivo .env")
 
-    number_of_repositories = 4
+    number_of_repositories = 1000
     jar_path = "/Users/tabosa/ck/target/ck-0.7.1-SNAPSHOT-jar-with-dependencies.jar"
 
     processor = RepositoryProcessor(token, number_of_repositories, jar_path)
