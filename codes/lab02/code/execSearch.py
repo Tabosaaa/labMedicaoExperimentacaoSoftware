@@ -1,11 +1,8 @@
 import os
 import requests
 
-
-
 # URL da API GraphQL do GitHub
 GITHUB_API_URL = 'https://api.github.com/graphql'
-
 
 def exec_search(query, token):
     """Executa uma consulta GraphQL na API do GitHub."""
@@ -16,7 +13,6 @@ def exec_search(query, token):
         return response.json()
     except requests.exceptions.RequestException as e:
         raise Exception(f"Query falhou: {str(e)}")
-
 
 def build_query(batch_size, cursor=None):
     """Constrói a string de consulta GraphQL para buscar repositórios em Java."""
@@ -33,23 +29,14 @@ def build_query(batch_size, cursor=None):
                     }}
                     url
                     createdAt
-                    pullRequests(states: MERGED) {{
-                        totalCount
-                    }}
-                    releases {{
-                        totalCount
-                    }}
                     updatedAt
                     primaryLanguage {{
                         name
                     }}
-                    issues {{
-                        totalCount
-                    }}
-                    closedIssues: issues(states: CLOSED) {{
-                        totalCount
-                    }}
                     stargazers {{
+                        totalCount
+                    }}
+                    releases {{
                         totalCount
                     }}
                 }}
@@ -63,7 +50,6 @@ def build_query(batch_size, cursor=None):
     """
     return query
 
-
 def get_all_repositories(repository_number, token, batch_size=20):
     """Retorna uma lista dos repositórios Java mais populares."""
     all_repositories = []
@@ -72,6 +58,9 @@ def get_all_repositories(repository_number, token, batch_size=20):
     while len(all_repositories) < repository_number:
         query = build_query(batch_size, cursor)
         result = exec_search(query, token)
+
+        if 'errors' in result:
+            raise Exception(f"Erro na consulta GraphQL: {result['errors']}")
 
         all_repositories.extend(result['data']['search']['nodes'])
 
