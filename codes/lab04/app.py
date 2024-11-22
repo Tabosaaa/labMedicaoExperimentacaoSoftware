@@ -45,6 +45,45 @@ fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor='lightgray')
 # Exibe o gráfico no Streamlit
 st.plotly_chart(fig)
 
+import pandas as pd
+import streamlit as st
+import plotly.graph_objects as go
+
+# Leitura dos dados
+df = pd.read_csv('results.csv')
+
+# Criação do gráfico de dispersão
+fig = go.Figure()
+
+# Adiciona os pontos de dispersão
+fig.add_trace(go.Scatter(
+    x=df['TLOC'],
+    y=df['ts_ignore'],
+    mode='markers',
+    marker=dict(color='purple', opacity=0.6),
+    name='Projetos'
+))
+
+# Configurações do layout
+fig.update_layout(
+    title='Comparação entre Ocorrências de "ts_ignore" e Linhas Totais de Código TypeScript (TLOC) por Projeto',
+    xaxis_title='Total Lines of Code (TLOC) em TypeScript',
+    yaxis_title='Ocorrências de "ts_ignore"',
+    xaxis=dict(range=[0, 100000]),
+    yaxis=dict(range=[0, 100]),
+    legend=dict(title='Legenda'),
+    plot_bgcolor='white',
+    width=800,
+    height=600
+)
+
+# Adiciona linhas de grade
+fig.update_xaxes(showgrid=True, gridwidth=1, gridcolor='lightgray')
+fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor='lightgray')
+
+# Exibe o gráfico no Streamlit
+st.plotly_chart(fig)
+
 total_ts_loc = df['TLOC'].sum()
 total_js_loc = df['JS_LOC'].sum()
 
@@ -346,3 +385,194 @@ st.title('Análise da Quantidade de TS Ignore por Projeto')
     # Geração e exibição dos gráficos
 ts_ignore_plot(df)
 boxplot_ts_ignore(df)
+
+
+def get_labels(occurrences):
+    to_dict = occurrences.to_dict()
+    labels = ['Ativado: {}'.format(value) if key == 1 else 'Desativado: {}'.format(value) for key, value in to_dict.items()]
+    return labels
+
+def count_strict(df):
+    strict_counts = df[df['tsconfig_path'] != 'not_found']['strict'].value_counts()
+    labels = ['Ativado' if key == 1 else 'Desativado' for key in strict_counts.index]
+    values = strict_counts.values
+
+    data = pd.DataFrame({'Status': labels, 'Quantidade': values})
+
+    fig = px.bar(
+        data,
+        x='Status',
+        y='Quantidade',
+        color='Status',
+        color_discrete_map={'Ativado': 'green', 'Desativado': 'red'},
+        title='Ocorrências de Uso de Strict nos Repositórios'
+    )
+    fig.update_layout(
+        xaxis_title='Strict Ativado',
+        yaxis_title='Número de Repositórios',
+        showlegend=False
+    )
+    st.plotly_chart(fig)
+
+def count_always_strict(df):
+    occurrences = df[df['tsconfig_path'] != 'not_found']['alwaysStrict'].value_counts()
+    labels = ['Ativado' if key == 1 else 'Desativado' for key in occurrences.index]
+    values = occurrences.values
+
+    data = pd.DataFrame({'Status': labels, 'Quantidade': values})
+
+    fig = px.bar(
+        data,
+        x='Status',
+        y='Quantidade',
+        color='Status',
+        color_discrete_map={'Ativado': 'black', 'Desativado': 'yellow'},
+        title='Ocorrência da Métrica alwaysStrict'
+    )
+    fig.update_layout(
+        xaxis_title='Always Strict',
+        yaxis_title='Quantidade de Projetos',
+        showlegend=False
+    )
+    st.plotly_chart(fig)
+
+def count_strict_bind_call_apply(df):
+    occurrences = df[df['tsconfig_path'] != 'not_found']['strictBindCallApply'].value_counts()
+    labels = ['Ativado' if key == 1 else 'Desativado' for key in occurrences.index]
+    values = occurrences.values
+
+    data = pd.DataFrame({'Status': labels, 'Quantidade': values})
+
+    fig = px.bar(
+        data,
+        x='Status',
+        y='Quantidade',
+        color='Status',
+        color_discrete_map={'Ativado': 'red', 'Desativado': 'yellow'},
+        title='Ocorrência da Métrica strictBindCallApply'
+    )
+    fig.update_layout(
+        xaxis_title='Strict Bind Call Apply',
+        yaxis_title='Quantidade de Projetos',
+        showlegend=False
+    )
+    st.plotly_chart(fig)
+
+def count_strict_function_types(df):
+    occurrences = df[df['tsconfig_path'] != 'not_found']['strictFunctionTypes'].value_counts()
+    labels = ['Ativado' if key == 1 else 'Desativado' for key in occurrences.index]
+    values = occurrences.values
+
+    data = pd.DataFrame({'Status': labels, 'Quantidade': values})
+
+    fig = px.bar(
+        data,
+        x='Status',
+        y='Quantidade',
+        color='Status',
+        color_discrete_map={'Ativado': 'black', 'Desativado': 'green'},
+        title='Ocorrência da Métrica strictFunctionTypes'
+    )
+    fig.update_layout(
+        xaxis_title='Strict Function Types',
+        yaxis_title='Quantidade de Projetos',
+        showlegend=False
+    )
+    st.plotly_chart(fig)
+
+def count_strict_null_checks(df):
+    occurrences = df[df['tsconfig_path'] != 'not_found']['strictNullChecks'].value_counts()
+    labels = ['Ativado' if key == 1 else 'Desativado' for key in occurrences.index]
+    values = occurrences.values
+
+    data = pd.DataFrame({'Status': labels, 'Quantidade': values})
+
+    fig = px.bar(
+        data,
+        x='Status',
+        y='Quantidade',
+        color='Status',
+        color_discrete_map={'Ativado': 'blue', 'Desativado': 'orange'},
+        title='Ocorrência da Métrica strictNullChecks'
+    )
+    fig.update_layout(
+        xaxis_title='Strict Null Checks',
+        yaxis_title='Quantidade de Projetos',
+        showlegend=False
+    )
+    st.plotly_chart(fig)
+
+def count_strict_property_initialization(df):
+    occurrences = df[df['tsconfig_path'] != 'not_found']['strictPropertyInitialization'].value_counts()
+    labels = ['Ativado' if key == 1 else 'Desativado' for key in occurrences.index]
+    values = occurrences.values
+
+    data = pd.DataFrame({'Status': labels, 'Quantidade': values})
+
+    fig = px.bar(
+        data,
+        x='Status',
+        y='Quantidade',
+        color='Status',
+        color_discrete_map={'Ativado': 'black', 'Desativado': 'purple'},
+        title='Ocorrência da Métrica strictPropertyInitialization'
+    )
+    fig.update_layout(
+        xaxis_title='Strict Property Initialization',
+        yaxis_title='Quantidade de Projetos',
+        showlegend=False
+    )
+    st.plotly_chart(fig)
+
+def count_no_implicit_any(df):
+    occurrences = df[df['tsconfig_path'] != 'not_found']['noImplicitAny'].value_counts()
+    labels = ['Ativado' if key == 1 else 'Desativado' for key in occurrences.index]
+    values = occurrences.values
+
+    data = pd.DataFrame({'Status': labels, 'Quantidade': values})
+
+    fig = px.bar(
+        data,
+        x='Status',
+        y='Quantidade',
+        color='Status',
+        color_discrete_map={'Ativado': 'blue', 'Desativado': 'pink'},
+        title='Ocorrência da Métrica noImplicitAny'
+    )
+    fig.update_layout(
+        xaxis_title='No Implicit Any',
+        yaxis_title='Quantidade de Projetos',
+        showlegend=False
+    )
+    st.plotly_chart(fig)
+
+def count_no_implicit_this(df):
+    occurrences = df[df['tsconfig_path'] != 'not_found']['noImplicitThis'].value_counts()
+    labels = ['Ativado' if key == 1 else 'Desativado' for key in occurrences.index]
+    values = occurrences.values
+
+    data = pd.DataFrame({'Status': labels, 'Quantidade': values})
+
+    fig = px.bar(
+        data,
+        x='Status',
+        y='Quantidade',
+        color='Status',
+        color_discrete_map={'Ativado': 'blue', 'Desativado': 'orange'},
+        title='Ocorrência da Métrica noImplicitThis'
+    )
+    fig.update_layout(
+        xaxis_title='No Implicit This',
+        yaxis_title='Quantidade de Projetos',
+        showlegend=False
+    )
+    st.plotly_chart(fig)
+    
+count_strict(df)
+count_always_strict(df)
+count_strict_bind_call_apply(df)
+count_strict_function_types(df)
+count_strict_null_checks(df)
+count_strict_property_initialization(df)
+count_no_implicit_any(df)
+count_no_implicit_this(df)
